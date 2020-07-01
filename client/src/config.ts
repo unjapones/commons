@@ -40,3 +40,5 @@ export const ipfsGatewayUri =
     process.env.REACT_APP_IPFS_GATEWAY_URI || 'https://gateway.ipfs.io'
 export const ipfsNodeUri =
     process.env.REACT_APP_IPFS_NODE_URI || 'https://ipfs.infura.io:5001'
+export const opMiddlewareUri =
+    process.env.REACT_APP_OP_MIDDLEWARE_URI || 'http://localhost:3333'

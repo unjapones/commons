@@ -19,6 +19,7 @@ import cleanupContentType from '../../../utils/cleanupContentType'
 import Spinner from '../../../components/atoms/Spinner'
 
 const Ipfs = lazy(() => import('./Ipfs'))
+const Filecoin = lazy(() => import('./Filecoin'))
 
 export interface FilePublish extends File {
     found: boolean // non-standard
@@ -41,6 +42,7 @@ interface FilesProps {
 interface FilesStates {
     isFormShown: boolean
     isIpfsFormShown: boolean
+    isFilecoinFormShown: boolean
 }
 
 const buttons = [
@@ -53,13 +55,19 @@ const buttons = [
         id: 'ipfs',
         title: '+ Add to IPFS',
         titleActive: '- Cancel'
+    },
+    {
+        id: 'filecoin',
+        title: '+ Add to IPFS+Filecoin',
+        titleActive: '- Cancel'
     }
 ]
 
 export default class Files extends PureComponent<FilesProps, FilesStates> {
     public state: FilesStates = {
         isFormShown: false,
-        isIpfsFormShown: false
+        isIpfsFormShown: false,
+        isFilecoinFormShown: false
     }
 
     // for canceling axios requests
@@ -75,7 +83,9 @@ export default class Files extends PureComponent<FilesProps, FilesStates> {
         this.setState({
             isFormShown: form === 'url' ? !this.state.isFormShown : false,
             isIpfsFormShown:
-                form === 'ipfs' ? !this.state.isIpfsFormShown : false
+                form === 'ipfs' ? !this.state.isIpfsFormShown : false,
+            isFilecoinFormShown:
+                form === 'filecoin' ? !this.state.isFilecoinFormShown : false
         })
     }
 
@@ -120,7 +130,8 @@ export default class Files extends PureComponent<FilesProps, FilesStates> {
         if (duplicateFiles.length > 0) {
             return this.setState({
                 isFormShown: false,
-                isIpfsFormShown: false
+                isIpfsFormShown: false,
+                isFilecoinFormShown: false
             })
         }
 
@@ -137,7 +148,8 @@ export default class Files extends PureComponent<FilesProps, FilesStates> {
 
         this.setState({
             isFormShown: false,
-            isIpfsFormShown: false
+            isIpfsFormShown: false,
+            isFilecoinFormShown: false
         })
 
         this.forceUpdate()
@@ -157,7 +169,7 @@ export default class Files extends PureComponent<FilesProps, FilesStates> {
 
     public render() {
         const { files, help, placeholder, name, onChange } = this.props
-        const { isFormShown, isIpfsFormShown } = this.state
+        const { isFormShown, isIpfsFormShown, isFilecoinFormShown } = this.state
 
         return (
             <>
@@ -188,7 +200,8 @@ export default class Files extends PureComponent<FilesProps, FilesStates> {
                     {buttons.map((button) => {
                         const isActive =
                             (button.id === 'url' && isFormShown) ||
-                            (button.id === 'ipfs' && isIpfsFormShown)
+                            (button.id === 'ipfs' && isIpfsFormShown) ||
+                            (button.id === 'filecoin' && isFilecoinFormShown)
 
                         return (
                             <Button
@@ -213,6 +226,12 @@ export default class Files extends PureComponent<FilesProps, FilesStates> {
                     {isIpfsFormShown && (
                         <Suspense fallback={<Spinner message="Loading..." />}>
                             <Ipfs addFile={this.addFile} />
+                        </Suspense>
+                    )}
+
+                    {isFilecoinFormShown && (
+                        <Suspense fallback={<Spinner message="Loading..." />}>
+                            <Filecoin addFile={this.addFile} />
                         </Suspense>
                     )}
                 </div>
