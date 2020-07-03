@@ -15,24 +15,17 @@ export function arraySum(array: number[]) {
     return array.reduce((a, b) => a + b, 0)
 }
 
-export function streamFiles(ipfs: any, files: any) {
-    return new Promise((resolve, reject) => {
-        const stream = ipfs.addReadableStream({
-            wrapWithDirectory: true
-            // progress: (length: number) =>
-            //     setFileSizeReceived(formatBytes(length, 0))
-        })
-
-        stream.on('data', (data: any) => {
-            Logger.log(`Added ${data.path} hash: ${data.hash}`)
-            // The last data event will contain the directory hash
-            if (data.path === '') resolve(data.hash)
-        })
-
-        stream.on('error', reject)
-        stream.write(files)
-        stream.end()
-    })
+export async function streamFiles(
+    ipfs: any,
+    file: any
+): Promise<string | undefined> {
+    const additions = ipfs.add(file, { wrapWithDirectory: true })
+    for await (const addRes of additions) {
+        // Two things will be added, return the wrapping directory's CID
+        if (addRes.path !== file.path) {
+            return addRes.cid
+        }
+    }
 }
 
 export async function pingUrl(url: string) {
