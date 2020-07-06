@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react'
 import Web3message from '../../components/organisms/Web3message'
 import Spinner from '../../components/atoms/Spinner'
 import Button from '../../components/atoms/Button'
+import FilecoinBack from './FilecoinBack'
 import styles from './StepRegisterContent.module.scss'
 
 export const messages: any = {
@@ -24,6 +25,7 @@ interface StepRegisterContentProps {
         publishingError: string
         isPublished: boolean
         publishingStep: number
+        files: any[]
     }
     content?: string
 }
@@ -50,15 +52,18 @@ export default class StepRegisterContent extends PureComponent<
     )
 
     public publishedState = () => (
-        <div className={styles.success}>
-            <p>Your asset is published!</p>
-            <Button link to={'/asset/' + this.props.state.publishedDid}>
-                See published asset
-            </Button>
-            <Button link onClick={() => this.props.toStart()}>
-                Publish another asset
-            </Button>
-        </div>
+        <>
+            <div className={styles.success}>
+                <p>Your asset is published!</p>
+                <Button link to={'/asset/' + this.props.state.publishedDid}>
+                    See published asset
+                </Button>
+                <Button link onClick={() => this.props.toStart()}>
+                    Publish another asset
+                </Button>
+            </div>
+            <FilecoinBack files={this.props.state.files} />
+        </>
     )
 
     public render() {

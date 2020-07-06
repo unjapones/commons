@@ -15,5 +15,16 @@ export default function Status({
         : error
         ? styles.error
         : styles.message
-    return <div className={classes}>{error || message}</div>
+    return (
+        <>
+            <div className={classes}>{error || message}</div>
+            {isIpfsReady && (
+                <div className={styles.note}>
+                    After the asset gets published, files that meet certain
+                    criteria will be stored on Filecoin to back the IPFS
+                    storage.
+                </div>
+            )}
+        </>
+    )
 }

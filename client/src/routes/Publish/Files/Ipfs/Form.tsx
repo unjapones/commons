@@ -19,7 +19,7 @@ export default function Form({
     return (
         <div className={styles.ipfsForm}>
             <Label htmlFor="fileUpload" required>
-                Add File To IPFS
+                Add File To IPFS (and Filecoin)
             </Label>
             {children}
             <Status

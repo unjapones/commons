@@ -1,0 +1,19 @@
+@import '../../../styles/variables';
+
+.linkUrl {
+    font-size: $font-size-small;
+    display: block;
+    margin-bottom: $spacer / 8;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-all;
+}
+
+.details {
+    font-size: $font-size-mini;
+    color: $brand-grey-light;
+
+    span {
+        padding-right: $spacer;
+    }
+}
