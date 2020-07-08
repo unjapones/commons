@@ -29,7 +29,7 @@ export async function uploadFile(
 
 export async function queueBack(
     urls: string[]
-): Promise<{ url: string; jobId: string; status: string }[]> {
+): Promise<{ url: string; jobId: string; status: string; detail: any }[]> {
     try {
         const r = await axios.post(`${opMiddlewareUri}/ipfs`, urls)
         return r.data

@@ -4,11 +4,22 @@ import { queueBack, pollJobStatuses } from '../utils/opMiddleware'
 export const finishedJobStatuses = ['SUCCESS', 'FAILED', 'CANCELLED']
 const pollingIntervalMillis = 2500
 
-type IpfsFolders = {
+export type ProposalInfo = {
+    activationEpoch: number
+    duration: number
+    epochPrice: number
+    miner: string
+    proposalCid: string
+    renewed: boolean
+    startEpoch: number
+}
+
+export type IpfsFolders = {
     [key: string]: {
         jobId?: string
         status?: string
         lastUpdate?: Date
+        detail?: any
     }
 }
 
@@ -29,7 +40,8 @@ export default function useFilecoinBacking(files: { url: string }[]) {
                     newIpfsFolders[item.url] = {
                         jobId: item.jobId,
                         status: item.status,
-                        lastUpdate: new Date()
+                        lastUpdate: new Date(),
+                        detail: item.detail
                     }
                 })
                 setIpfsFolders(newIpfsFolders)
@@ -62,23 +74,21 @@ export default function useFilecoinBacking(files: { url: string }[]) {
         setIsPollingWorking(true)
         const cleanPoll = pollJobStatuses(
             jobIds as string[],
-            (response: { url: string; status: string }[]) => {
+            (response: { url: string; status: string; detail: any }[]) => {
                 const newIpfsFolders = { ...ipfsFolders }
                 // Count finished jobs and update state at the same time
-                const finishedJobsCount = response.reduce(
-                    (count, ri: { url: string; status: string }) => {
-                        const { url, status } = ri
-                        newIpfsFolders[url] = {
-                            ...ipfsFolders[url],
-                            lastUpdate: new Date(),
-                            status
-                        }
-                        return finishedJobStatuses.indexOf(status) > -1
-                            ? count + 1
-                            : count
-                    },
-                    0
-                )
+                const finishedJobsCount = response.reduce((count, ri) => {
+                    const { url, status, detail } = ri
+                    newIpfsFolders[url] = {
+                        ...ipfsFolders[url],
+                        lastUpdate: new Date(),
+                        status,
+                        detail
+                    }
+                    return finishedJobStatuses.indexOf(status) > -1
+                        ? count + 1
+                        : count
+                }, 0)
                 setIpfsFolders(newIpfsFolders)
                 // Finish polling when all jobs finshed
                 // @TODO: use timeout to force cancelling in worst case scenario

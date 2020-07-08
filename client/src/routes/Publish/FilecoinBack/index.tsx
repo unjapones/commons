@@ -14,10 +14,12 @@ export default function QueueFilecoinBack({
 
     const urls = Object.keys(ipfsFolders)
     const ipfsFiles = urls.map((url: string) => {
+        const { status, lastUpdate, detail } = ipfsFolders[url]
         return {
             url,
-            status: ipfsFolders[url].status as string,
-            lastUpdate: ipfsFolders[url].lastUpdate as Date
+            status: status as string,
+            lastUpdate: lastUpdate as Date,
+            detail
         }
     })
 
